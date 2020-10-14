@@ -7,6 +7,7 @@ import torch
 # ]
 
 def pega_sum(src_text):
+    src_text = [src_text]
     model_name = 'google/pegasus-cnn_dailymail'
     torch_device = 'cuda' if torch.cuda.is_available() else 'cpu'
     tokenizer = PegasusTokenizer.from_pretrained(model_name)
