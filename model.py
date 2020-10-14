@@ -8,7 +8,7 @@ from string import punctuation
 from collections import Counter
 
 extra_words = list(STOP_WORDS) + list(punctuation) + ['\n']
-nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_sm")
 
 def model_0(text, limit = 4):
     keyword = []
