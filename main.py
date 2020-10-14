@@ -18,6 +18,18 @@ import streamlit as st
 from model import model_0, model_1, model_2
 
 def main():
+    # pre download the bert model
+    text_0 = '''Pelosi and Treasury Secretary Steven Mnuchin each raised the prospect of resuming negotiations on a stimulus package earlier Thursday, without giving any indication that they’d moved closer to a compromise.
+Mnuchin said during a Senate Banking Committee hearing on Thursday that a targeted pandemic relief package was “still needed.”
+“If the Democrats are willing to sit down, I’m willing to sit down anytime for bipartisan legislation. Let’s pass something quickly,” Mnuchin said.
+The House speaker told reporters Wednesday she wasn’t sure when she and Mnuchin would next talk.
+“We are ready for a negotiation,” she said. “I am talking with my caucus and my leadership and we will see what we are going to do,” Pelosi said.
+The prospect of talks helped push stocks higher briefly. But that optimism was tempered by reports showing a resurgence in coronavirus cases in Europe, and investors pulled stocks back off session highs.
+Lawmakers on both sides remained skeptical a deal could be had before the Nov. 3 election.
+'''
+    from summarizer import Summarizer
+    model = Summarizer()
+    sum_text = model(text_0, ratio = 0.1)
     # UI with Streamlit
     # Sidebar
     st.sidebar.title("About Me")
@@ -30,11 +42,16 @@ def main():
     ('TF-IDF-based', 'TextRank', 'BERT Embedding')
     )
 
-    model_selected = model_0
+    # call the models to be preloaded, especially bert model takes long to download
+    model_00 = model_0
+    model_11 = model_1
+    model_22 = model_2
+
+    model_selected = model_00
     if algo_picked == 'TextRank':
-        model_selected = model_1
+        model_selected = model_11
     elif algo_picked == 'BERT Embedding':
-        model_selected = model_2
+        model_selected = model_22
 
     turn_on_org = False
     org_onOff = st.sidebar.selectbox(
