@@ -6,6 +6,7 @@ import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from collections import Counter
+import streamlit as st
 
 extra_words = list(STOP_WORDS) + list(punctuation) + ['\n']
 nlp = spacy.load("en_core_web_sm")
@@ -59,13 +60,24 @@ def model_1(text):
     sum_text = sum_text.replace('\n', ' ')
     return " ".join(sum_text.split())
 # 3. Bert Embedding
+
+@st.cache
 def model_2(text):
-    from summarizer import Summarizer
-    model = Summarizer()
-    sum_text = model(text, ratio = 0.1)
-    # return model.run_embeddings(text)
-    sum_text = sum_text.replace('\n', ' ')
-    return " ".join(sum_text.split())
+    from transformers import pipeline
+    # use bart in pytorch
+    summarizer = pipeline("summarization")
+    if len(text) >= 1024:
+        text = text[:1024]
+    sum_text = summarizer(text, min_length = 60, max_length = 140)
+
+    return sum_text[0]['summary_text']
+# def model_2(text):
+#     from summarizer import Summarizer
+#     model = Summarizer()
+#     sum_text = model(text, ratio = 0.1)
+#     # return model.run_embeddings(text)
+#     sum_text = sum_text.replace('\n', ' ')
+#     return " ".join(sum_text.split())
 
 
 
@@ -115,7 +127,6 @@ The recovery has been faster than anticipated so far, Powell said, thanks to inc
 “The risk is that they’ll go through that money, ultimately, and have to cut back on spending and maybe lose their home,” the Fed chief said. “That’s the downside risk of no further action.”
 
 The plan for a fresh House vote on stimulus follows weeks of resistance from Pelosi to suggestions from moderate members for a vote on a new Democratic package. About a dozen moderate members this week began threatening to mutiny and back a Republican procedural move to force a House floor vote on small-business relief. Some of those members on Thursday began circulating a letter opposing the GOP move, as Pelosi proceeded toward a House compromise vote.
-— With assistance by Craig Torres, Catarina Saraiva, Laura Litvan, and Saleha Mohsin
 """
 # # # Driver program
 # if __name__ == "__main__":
