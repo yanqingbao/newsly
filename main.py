@@ -16,6 +16,7 @@ import numpy as np
 from PIL import Image
 import streamlit as st
 from model import model_0, model_1, model_2
+from new_model import pega_sum, pega_xsum
 
 def main():
     # pre download the bert model
@@ -27,9 +28,9 @@ The House speaker told reporters Wednesday she wasn’t sure when she and Mnuchi
 The prospect of talks helped push stocks higher briefly. But that optimism was tempered by reports showing a resurgence in coronavirus cases in Europe, and investors pulled stocks back off session highs.
 Lawmakers on both sides remained skeptical a deal could be had before the Nov. 3 election.
 '''
-    from summarizer import Summarizer
-    model = Summarizer()
-    sum_text = model(text_0, ratio = 0.1)
+    # from summarizer import Summarizer
+    # model = Summarizer()
+    # sum_text = model(text_0, ratio = 0.1)
     # UI with Streamlit
     # Sidebar
     st.sidebar.title("About Me")
@@ -39,19 +40,20 @@ Lawmakers on both sides remained skeptical a deal could be had before the Nov. 3
     # Add a selectbox to the sidebar:
     algo_picked = st.sidebar.selectbox(
     'Which algorithm would you like to pick',
-    ('TF-IDF-based', 'TextRank', 'BERT Embedding')
+    ('TF-IDF-based', 'TextRank', 'BERT Embedding', 'Pegasus_AbstractiveSum')
     )
 
     # call the models to be preloaded, especially bert model takes long to download
-    model_00 = model_0
-    model_11 = model_1
-    model_22 = model_2
+    # model_22 = model_2
 
-    model_selected = model_00
-    if algo_picked == 'TextRank':
-        model_selected = model_11
-    elif algo_picked == 'BERT Embedding':
-        model_selected = model_22
+    # model_selected = model_0
+    # if algo_picked == 'TextRank':
+    #     model_selected = model_1
+    # elif algo_picked == 'BERT Embedding':
+    #     model_selected = model_22
+    # elif algo_picked == 'Pegasus_AbstractiveSum':
+    #     model_selected = pega_sum
+    
 
     turn_on_org = False
     org_onOff = st.sidebar.selectbox(
@@ -60,7 +62,6 @@ Lawmakers on both sides remained skeptical a deal could be had before the Nov. 3
     )
     if org_onOff == 'Yes':
         turn_on_org = True
-
 
     # # Add a slider to the sidebar:
     # add_slider = st.sidebar.slider(
@@ -77,27 +78,62 @@ Lawmakers on both sides remained skeptical a deal could be had before the Nov. 3
 
     # select which model
 
-    # run specific model
-    sum_text = model_selected(test_text)
-    # output result
+    # # run specific model
+    # sum_text = model_selected(test_text)
+
+
+
     user_input = st.text_input("", 'Paste your article/URL here.')
     st.write("Note: paste URL directly might cause error on some websites, such as CNN")
 
-    num_org = len(test_text.split(' '))
+    demo_mode = True
+    if demo_mode:
+        text_full = test_text
+    else:
+        text_full = user_input
+
+
+
+
+    # Preprocess for text_full, remove \n
+    text_full = text_full.replace('\n', ' ')
+    
+    # This part has been rewritten, need to pre-calculate the summarized text for each algorithms, 
+    # especially BERT-ones, to save time, while switching
+
+    # Extractive summarization
+    sum_tfidf = model_0(text_full)
+    sum_txtRank = model_1(text_full)
+    sum_bert = model_2(text_full)
+
+    # Abstractive summarization
+    sum_pega = pega_sum(text_full)
+    sum_pega_xsum = pega_xsum(text_full)
+    
+    sum_text = sum_tfidf
+    if algo_picked == 'TextRank':
+        sum_text = sum_txtRank
+    elif algo_picked == 'BERT Embedding':
+        sum_text = sum_bert
+    elif algo_picked == 'Pegasus_AbstractiveSum':
+        sum_text = sum_pega
+
+    num_org = len(text_full.split(' '))
     num_sum = len(sum_text.split(' '))
 
+    st.header('One-sentence summary')
+    st.write(sum_pega_xsum)
     st.header('Summarized Article:')
     st.subheader(f'Number of Words: {num_sum}')
     st.write(sum_text)
     if turn_on_org:
         st.header('Original Article:')
         st.subheader(f'Number of Words: {num_org}')
-        st.write(test_text)
-
-
-
+        st.write(text_full)
 
     return 42
+
+
 
 
 
@@ -178,6 +214,6 @@ Thanks for reading The Times.
 
 
 
-
 if __name__ == '__main__':
     main()
+
