@@ -39,19 +39,16 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Newsly</h3>
+  <h3 align="center">Newsly, we help you read faster!</h3>
 
   <p align="center">
-    We help you read faster!
-    <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    A summarization tool based on machine learning and deep learning techniques.
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+   
+    <a href="https://github.com/yanqingbao/newsly/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/yanqingbao/newsly/pulls">Request Feature</a>
   </p>
 </p>
 
